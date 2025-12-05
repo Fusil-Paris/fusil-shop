@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>FUSIL Paris - Joaillerie Contemporaine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --surface: #ffffff;
+    --surface-dim: #f5f5f5;
+    --on-surface: #000000;
+    --on-surface-muted: #666666;
+    --outline: #e0e0e0;
+    --radius-md: 8px;
+    --radius-full: 9999px;
+}
+
+html, body {
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background: var(--surface);
+    font-family: 'Montserrat', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    color: var(--on-surface);
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+img { max-width: 100%; display: block; }
+
+/* HEADER */
+header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    height: 64px;
+    padding: 0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.35s ease;
+}
+header.gradient {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+}
+header.light {
+    background: var(--surface);
+    border-bottom: 1px solid var(--outline);
+}
+
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 1;
+}
+
+.icon-btn {
+    width: 48px; height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border-radius: var(--radius-full);
+    transition: background 0.2s, color 0.35s;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.1); }
+.icon-btn svg { width: 24px; height: 24px; }
+header.light .icon-btn { color: var(--on-surface); }
+header.light .icon-btn:hover { background: rgba(0,0,0,0.05); }
+
+.logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+.logo img { height: 100px; width: auto; transition: opacity 0.35s; }
+.logo-white { opacity: 1; }
+.logo-black { position: absolute; top: 0; left: 0; opacity: 0; }
+header.light .logo-white { opacity: 0; }
+header.light .logo-black { opacity: 1; }
+
+.lang-toggle {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: #fff;
+    opacity: 0.7;
+    transition: opacity 0.2s, color 0.35s;
+}
+.lang-toggle:hover { opacity: 1; }
+header.light .lang-toggle { color: #000; }
+
+.cart-btn { position: relative; }
+.cart-badge {
+    position: absolute;
+    top: 6px; right: 6px;
+    min-width: 16px; height: 16px;
+    padding: 0 4px;
+    background: #fff;
+    color: #000;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.cart-badge.show { display: flex; }
+header.light .cart-badge { background: #000; color: #fff; }
+
+.desktop-nav { display: none; }
+
+@media (min-width: 900px) {
+    header { height: 80px; padding: 0 32px; }
+    .mobile-menu-btn { display: none; }
+    .logo img { height: 120px; }
+    header.gradient .logo { opacity: 0; pointer-events: none; }
+    
+    .desktop-nav {
+        display: flex;
+        gap: 48px;
+        margin-right: 24px;
+    }
+    .desktop-nav a {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #fff;
+        opacity: 0.7;
+        padding: 20px 16px;
+        transition: opacity 0.2s, color 0.35s;
+    }
+    .desktop-nav a:hover,
+    .desktop-nav a.active { opacity: 1; }
+    header.light .desktop-nav a { color: var(--on-surface); }
+}
+
+/* MOBILE MENU */
+.menu-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 550;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.menu-scrim.open { opacity: 1; pointer-events: auto; }
+
+.menu {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 280px;
+    z-index: 600;
+    background: #1a1a1a;
+    padding: 80px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+.menu.open { transform: translateX(0); }
+
+.menu-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: #fff;
+}
+
+.menu-nav { flex: 1; }
+.menu-nav a {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    padding: 20px 0;
+    transition: color 0.2s;
+}
+.menu-nav a:hover,
+.menu-nav a.active { color: #fff; }
+
+.menu-lang {
+    padding: 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+.menu-lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+}
+.menu-lang-btn:hover { color: #fff; }
+
+/* VIEWS */
+.view {
+    position: fixed;
+    inset: 0;
+    background: var(--surface);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.view.active { opacity: 1; visibility: visible; z-index: 1; }
+
+/* LOOKBOOK */
+.lookbook-feed {
+    height: 100%;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+}
+.lookbook-slide {
+    height: 100%;
+    height: 100dvh;
+    scroll-snap-align: start;
+    position: relative;
+}
+.lookbook-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.lookbook-products {
+    position: absolute;
+    bottom: 100px;
+    left: 16px;
+    display: flex;
+    gap: 12px;
+}
+.lookbook-product {
+    width: 70px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.lookbook-product img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+.lookbook-product span {
+    display: block;
+    padding: 6px;
+    font-size: 10px;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lookbook-dots {
+    position: fixed;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+}
+.lookbook-dots span {
+    width: 8px; height: 8px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+.lookbook-dots span.active {
+    background: #fff;
+    transform: scale(1.3);
+}
+
+.grid-btn {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    cursor: pointer;
+    z-index: 100;
+}
+.grid-btn svg { width: 20px; height: 20px; }
+
+@media (min-width: 900px) {
+    .lookbook-feed {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        scroll-snap-type: none;
+    }
+    .lookbook-slide {
+        height: 100vh;
+        scroll-snap-align: none;
+    }
+    .lookbook-dots { display: none; }
+}
+
+/* GRID */
+#viewGrid {
+    overflow-y: auto;
+    padding-top: 64px;
+}
+@media (min-width: 900px) { #viewGrid { padding-top: 80px; } }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 2px;
+}
+.grid-container img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* SHOP */
+#viewShop {
+    overflow-y: auto;
+    padding-top: 64px;
+}
+@media (min-width: 900px) { #viewShop { padding-top: 80px; } }
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+.shop-item {
+    background: var(--surface);
+    cursor: pointer;
+    border-bottom: 1px solid var(--outline);
+}
+.shop-item:nth-child(odd) { border-right: 1px solid var(--outline); }
+.shop-item-img {
+    aspect-ratio: 1;
+    overflow: hidden;
+}
+.shop-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+}
+.shop-item-info {
+    padding: 12px 14px 16px;
+}
+.shop-item-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.shop-item-price {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--on-surface-muted);
+}
+
+@media (min-width: 600px) {
+    .shop-grid { grid-template-columns: repeat(3, 1fr); }
+    .shop-item { border-right: 1px solid var(--outline); }
+    .shop-item:nth-child(3n) { border-right: none; }
+}
+@media (min-width: 1024px) {
+    .shop-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        padding: 48px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .shop-item {
+        border: none !important;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .shop-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    }
+    .shop-item:hover .shop-item-img img { transform: scale(1.05); }
+}
+
+/* DETAIL */
+.detail {
+    position: fixed;
+    inset: 0;
+    z-index: 700;
+    background: var(--surface);
+    opacity: 0;
+    visibility: hidden;
+    overflow-y: auto;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.detail.open { opacity: 1; visibility: visible; }
+
+.detail-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 16px;
+    background: var(--surface);
+}
+.detail-header .icon-btn { color: var(--on-surface); }
+
+.detail-content {
+    padding: 0 20px 100px;
+}
+.detail-gallery {
+    margin-bottom: 32px;
+}
+.detail-main-image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+.detail-main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.detail-thumbs {
+    display: flex;
+    gap: 8px;
+}
+.detail-thumbs img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.detail-thumbs img.active,
+.detail-thumbs img:hover { opacity: 1; }
+
+.detail-collection {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--on-surface-muted);
+    margin-bottom: 8px;
+}
+.detail-name {
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+.detail-price {
+    font-size: 20px;
+    font-weight: 300;
+    margin-bottom: 24px;
+}
+
+.detail-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #f5f0e8, #ebe5db);
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+}
+.detail-badge::before {
+    content: '';
+    width: 8px; height: 8px;
+    background: #c9a227;
+    border-radius: 50%;
+}
+
+.size-section { margin-bottom: 24px; }
+.size-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.size-header span {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.size-guide-btn {
+    font-size: 12px;
+    color: var(--on-surface-muted);
+    text-decoration: underline;
+}
+.size-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.size-chip {
+    min-width: 48px;
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--outline);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.size-chip:hover { border-color: var(--on-surface); }
+.size-chip.selected {
+    background: var(--on-surface);
+    color: var(--surface);
+    border-color: var(--on-surface);
+}
+
+.custom-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.custom-size input {
+    width: 80px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--outline);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 14px;
+}
+.custom-size input:focus {
+    outline: none;
+    border-color: var(--on-surface);
+}
+
+.detail-desc {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--on-surface-muted);
+    margin-bottom: 24px;
+}
+
+.btn-primary {
+    width: 100%;
+    height: 52px;
+    background: var(--on-surface);
+    color: var(--surface);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: var(--radius-md);
+    transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+
+@media (min-width: 900px) {
+    .detail-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 40px 60px;
+    }
+    .detail-gallery { position: sticky; top: 100px; }
+}
+
+/* SIZE GUIDE MODAL */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 800;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.modal-backdrop.open { opacity: 1; visibility: visible; }
+
+.modal {
+    position: fixed;
+    z-index: 801;
+    background: var(--surface);
+    max-height: 80vh;
+    overflow-y: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 24px 24px 0 0;
+    padding: 24px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+.modal-backdrop.open .modal { transform: translateY(0); }
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.modal-title {
+    font-size: 18px;
+    font-weight: 500;
+}
+.modal-close {
+    width: 36px; height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--on-surface);
+}
+.modal-close:hover { background: var(--surface-dim); }
+.modal-close svg { width: 20px; height: 20px; }
+
+.modal-intro {
+    font-size: 14px;
+    color: var(--on-surface-muted);
+    margin-bottom: 20px;
+}
+
+.size-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.size-table th,
+.size-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--outline);
+}
+.size-table th {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--on-surface-muted);
+}
+
+@media (min-width: 600px) {
+    .modal {
+        top: 50%;
+        left: 50%;
+        right: auto;
+        bottom: auto;
+        width: 400px;
+        border-radius: 16px;
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0;
+    }
+    .modal-backdrop.open .modal {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* CART */
+#viewCart {
+    overflow-y: auto;
+    padding-top: 64px;
+}
+.cart-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 24px;
+}
+.cart-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--on-surface-muted);
+    margin-bottom: 32px;
+}
+.cart-empty {
+    text-align: center;
+    padding: 60px 20px;
+}
+.cart-empty svg {
+    width: 64px;
+    height: 64px;
+    stroke: var(--on-surface-muted);
+    margin-bottom: 24px;
+}
+.cart-empty p {
+    font-size: 15px;
+    color: var(--on-surface-muted);
+    margin-bottom: 24px;
+}
+.cart-empty .btn-primary {
+    width: auto;
+    padding: 0 32px;
+}
+.cart-items { margin-bottom: 32px; }
+.cart-item {
+    display: flex;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--outline);
+}
+.cart-item-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.cart-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.cart-item-info { flex: 1; }
+.cart-item-name {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.cart-item-size {
+    font-size: 13px;
+    color: var(--on-surface-muted);
+    margin-bottom: 8px;
+}
+.cart-item-price {
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+.cart-item-remove {
+    font-size: 12px;
+    color: var(--on-surface-muted);
+    text-decoration: underline;
+}
+.cart-item-remove:hover { color: var(--on-surface); }
+.cart-footer {
+    padding-top: 24px;
+    border-top: 1px solid var(--outline);
+}
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 24px;
+}
+
+/* ABOUT */
+#viewAbout {
+    overflow-y: auto;
+    padding-top: 64px;
+}
+.about-wrapper { min-height: 100%; }
+.about-hero {
+    max-height: 50vh;
+    overflow: hidden;
+}
+.about-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.about-content {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+}
+.about-content h1 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--on-surface-muted);
+    margin-bottom: 32px;
+}
+.about-content p {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.9;
+    margin-bottom: 20px;
+}
+.about-credit {
+    font-size: 13px;
+    color: var(--on-surface-muted);
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--outline);
+}
+
+@media (min-width: 900px) {
+    #viewAbout { padding-top: 80px; overflow: hidden; }
+    .about-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: calc(100vh - 80px);
+    }
+    .about-hero { max-height: none; height: 100%; }
+    .about-content {
+        max-width: none;
+        padding: 60px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+/* CONTACT */
+#viewContact {
+    overflow-y: auto;
+    padding-top: 64px;
+}
+.contact-wrapper { min-height: 100%; }
+.contact-map { display: none; }
+.contact-map iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+.contact-content {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+}
+.contact-content h1 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--on-surface-muted);
+    margin-bottom: 32px;
+}
+.contact-content > p {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 16px;
+}
+.contact-methods {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--outline);
+}
+.contact-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--on-surface-muted);
+    margin-bottom: 24px;
+}
+.contact-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.contact-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--surface-dim);
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+.contact-card:hover { background: #eee; }
+.contact-card svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+.contact-card-value {
+    font-size: 16px;
+    font-weight: 500;
+    flex: 1;
+}
+.contact-card-label {
+    font-size: 12px;
+    color: var(--on-surface-muted);
+}
+.contact-address-section {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--outline);
+}
+.contact-map-mobile {
+    margin: 16px 0 20px;
+}
+.contact-map-mobile iframe {
+    width: 100%;
+    height: 160px;
+    border: none;
+    border-radius: 12px;
+}
+.contact-address {
+    font-size: 16px;
+    line-height: 1.6;
+}
+.contact-rdv {
+    font-size: 13px;
+    color: var(--on-surface-muted);
+    margin-top: 8px;
+}
+
+@media (min-width: 900px) {
+    #viewContact { padding-top: 80px; overflow: hidden; }
+    .contact-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: calc(100vh - 80px);
+    }
+    .contact-map { display: block; height: 100%; }
+    .contact-map-mobile { display: none; }
+    .contact-content {
+        max-width: none;
+        padding: 60px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--on-surface-muted);
+}
+    </style>
+</head>
+<body>
+
+<header class="gradient" id="header">
+    <div class="header-left">
+        <button class="icon-btn mobile-menu-btn" id="menuBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <line x1="4" y1="7" x2="20" y2="7"/>
+                <line x1="4" y1="12" x2="20" y2="12"/>
+                <line x1="4" y1="17" x2="20" y2="17"/>
+            </svg>
+        </button>
+    </div>
+
+    <a href="#" class="logo" id="logoLink">
+        <img src="" alt="FUSIL" class="logo-white" id="logoWhite">
+        <img src="" alt="FUSIL" class="logo-black" id="logoBlack">
+    </a>
+
+    <div class="header-right">
+        <nav class="desktop-nav" id="desktopNav">
+            <a href="#" data-view="lookbook" class="active">Lookbook</a>
+            <a href="#" data-view="shop">E-Shop</a>
+            <a href="#" data-view="about">À propos</a>
+            <a href="#" data-view="contact">Contact</a>
+        </nav>
+        <button class="lang-toggle" id="langToggle">FR</button>
+        <button class="icon-btn cart-btn" id="cartBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M6 6h15l-1.5 9h-12z"/>
+                <circle cx="9" cy="19" r="1.5"/>
+                <circle cx="17" cy="19" r="1.5"/>
+                <path d="M6 6L5 3H2"/>
+            </svg>
+            <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+    </div>
+</header>
+
+<div class="menu-scrim" id="menuScrim"></div>
+<nav class="menu" id="menu">
+    <button class="icon-btn menu-close" id="menuClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="6" y1="6" x2="18" y2="18"/>
+            <line x1="18" y1="6" x2="6" y2="18"/>
+        </svg>
+    </button>
+    <div class="menu-nav" id="menuNav">
+        <a href="#" data-view="lookbook" class="active">Lookbook</a>
+        <a href="#" data-view="shop">E-Shop</a>
+        <a href="#" data-view="about">À propos</a>
+        <a href="#" data-view="contact">Contact</a>
+        <a href="#" data-view="cart">Panier</a>
+    </div>
+    <div class="menu-lang">
+        <button class="menu-lang-btn" id="menuLangBtn">
+            <span id="menuLangFlag">FR</span>
+            <span id="menuLangText">English</span>
+        </button>
+    </div>
+</nav>
+
+<div class="view active" id="viewLookbook">
+    <div class="lookbook-feed" id="lookbookFeed"></div>
+    <div class="lookbook-dots" id="lookbookDots"></div>
+</div>
+
+<button class="grid-btn" id="gridBtn">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+    <span>Galerie</span>
+</button>
+
+<div class="view" id="viewGrid">
+    <div class="grid-container" id="gridContainer"></div>
+</div>
+
+<div class="view" id="viewShop">
+    <div class="shop-grid" id="shopGrid"></div>
+</div>
+
+<div class="view" id="viewCart">
+    <div class="cart-container" id="cartContainer"></div>
+</div>
+
+<div class="view" id="viewAbout">
+    <div class="about-wrapper">
+        <div class="about-hero">
+            <img src="" alt="" id="aboutImage">
+        </div>
+        <div class="about-content">
+            <h1 data-i18n="about.title">À propos</h1>
+            <p data-i18n="about.p1"></p>
+            <p data-i18n="about.p2"></p>
+            <p data-i18n="about.p3"></p>
+            <p data-i18n="about.p4"></p>
+            <p data-i18n="about.p5"></p>
+            <p data-i18n="about.p6"></p>
+            <p class="about-credit">— Camille Sultra, <em>Relief Magazine</em></p>
+        </div>
+    </div>
+</div>
+
+<div class="view" id="viewContact">
+    <div class="contact-wrapper">
+        <div class="contact-map">
+            <iframe src="https://maps.google.com/maps?q=31+Boulevard+de+Charonne,75011+Paris&output=embed" loading="lazy"></iframe>
+        </div>
+        <div class="contact-content">
+            <h1>Contact</h1>
+            <p data-i18n="contact.intro1"></p>
+            <p data-i18n="contact.intro2"></p>
+            <div class="contact-methods">
+                <p class="contact-label">Prendre rendez-vous</p>
+                <div class="contact-cards">
+                    <a href="tel:+33681036990" class="contact-card">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                        <span class="contact-card-value">06 81 03 69 90</span>
+                        <span class="contact-card-label">Appel</span>
+                    </a>
+                    <a href="https://wa.me/33681036990" target="_blank" class="contact-card">
+                        <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        <span class="contact-card-value">WhatsApp</span>
+                        <span class="contact-card-label">Message</span>
+                    </a>
+                    <a href="https://instagram.com/fusil.paris" target="_blank" class="contact-card">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#E4405F" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/></svg>
+                        <span class="contact-card-value">@fusil.paris</span>
+                        <span class="contact-card-label">Instagram</span>
+                    </a>
+                </div>
+            </div>
+            <div class="contact-address-section">
+                <p class="contact-label">L'atelier</p>
+                <div class="contact-map-mobile">
+                    <iframe src="https://maps.google.com/maps?q=31+Boulevard+de+Charonne,75011+Paris&output=embed" loading="lazy"></iframe>
+                </div>
+                <p class="contact-address">31 Boulevard de Charonne<br>75011 Paris</p>
+                <p class="contact-rdv">Sur rendez-vous uniquement</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="detail" id="detail">
+    <div class="detail-header">
+        <button class="icon-btn" id="detailBack">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div></div>
+    </div>
+    <div class="detail-content">
+        <div class="detail-gallery">
+            <div class="detail-main-image"><img src="" alt="" id="detailMainImg"></div>
+            <div class="detail-thumbs" id="detailThumbs"></div>
+        </div>
+        <div class="detail-info">
+            <div class="detail-collection" id="detailCollection"></div>
+            <h1 class="detail-name" id="detailName"></h1>
+            <div class="detail-price" id="detailPrice"></div>
+            <div class="detail-badge"><span>Fait main</span> · <span>Sur mesure</span></div>
+            <div class="size-section">
+                <div class="size-header">
+                    <span>Taille</span>
+                    <button class="size-guide-btn" id="sizeGuideBtn">Guide des tailles</button>
+                </div>
+                <div class="size-chips" id="sizeChips"></div>
+                <div class="custom-size">
+                    <input type="number" id="customSizeInput" placeholder="17.2" step="0.1" min="14" max="24">
+                    <span>mm (sur mesure)</span>
+                </div>
+            </div>
+            <p class="detail-desc" id="detailDesc"></p>
+            <button class="btn-primary" id="addToCartBtn">Ajouter au panier</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="sizeGuideModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 class="modal-title">Guide des tailles</h2>
+            <button class="modal-close" id="sizeGuideClose">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+            </button>
+        </div>
+        <p class="modal-intro">Pour connaître votre taille, mesurez le diamètre intérieur d'une bague qui vous va.</p>
+        <table class="size-table">
+            <thead><tr><th>Diamètre</th><th>FR</th><th>US</th></tr></thead>
+            <tbody>
+                <tr><td>14.9mm</td><td>46</td><td>3.5</td></tr>
+                <tr><td>15.3mm</td><td>48</td><td>4.5</td></tr>
+                <tr><td>15.9mm</td><td>50</td><td>5.5</td></tr>
+                <tr><td>16.5mm</td><td>52</td><td>6</td></tr>
+                <tr><td>17.1mm</td><td>54</td><td>7</td></tr>
+                <tr><td>17.7mm</td><td>56</td><td>7.5</td></tr>
+                <tr><td>18.4mm</td><td>58</td><td>8.5</td></tr>
+                <tr><td>18.9mm</td><td>60</td><td>9</td></tr>
+                <tr><td>19.5mm</td><td>62</td><td>10</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+(function() {
+    const CONFIG = {
+        SUPABASE_URL: 'https://hpeemnfesdorskukldsp.supabase.co',
+        SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZWVtbmZlc2RvcnNrdWtsZHNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1MzA2NzUsImV4cCI6MjA4MDEwNjY3NX0.1HTQo4rMFnokbJiJ80ebs18qP63L1f32cf_rjRYPj18'
+    };
+    const storageUrl = p => `${CONFIG.SUPABASE_URL}/storage/v1/object/public/fusil/${p}`;
+
+    const i18n = {
+        fr: {
+            about: {
+                title: 'À propos',
+                p1: 'Derrière les créations brutes de Fusil Paris, on retrouve Edouard, reconverti à la joaillerie sur un coup du hasard. C\'est en mettant la main sur d\'anciens couverts de famille qu\'il perçoit un potentiel terrain de jeu.',
+                p2: 'Un an plus tard, une première collection propose des modèles aux lignes franches. Les collections évoluent régulièrement selon l\'inspiration.',
+                p3: 'Chaque pièce est créée avec un mélange d\'instinct et de hasard. Edouard laisse libre cours à sa créativité.',
+                p4: 'Chaque bague est le fruit d\'une inspiration de l\'instant. Rien n\'est anticipé.',
+                p5: 'Ces particularités donnent aux créations leur caractère singulier. Chaque bijou a son histoire.',
+                p6: 'Le créateur se laisse la liberté d\'approches plus classiques, alliées à l\'esprit singulier de Fusil Paris.'
+            },
+            contact: {
+                intro1: 'Venez découvrir l\'atelier sur rendez-vous pour essayer les modèles.',
+                intro2: 'Un échange par téléphone est toujours possible.'
+            },
+            cart: { empty: 'Votre panier est vide', size: 'Taille', remove: 'Retirer', total: 'Total', checkout: 'Commander' }
+        },
+        en: {
+            about: {
+                title: 'About',
+                p1: 'Behind Fusil Paris\'s raw creations is Edouard, who turned to jewelry-making by chance. He found old family silverware and saw a playground.',
+                p2: 'A year later, a first collection offered models with frank lines. Collections evolve regularly based on inspiration.',
+                p3: 'Each piece is created with a mix of instinct and chance. Edouard gives free rein to his creativity.',
+                p4: 'Each ring is the fruit of instant inspiration. Nothing is anticipated.',
+                p5: 'These particularities give the creations their singular character. Each piece has its story.',
+                p6: 'The creator allows himself more classic approaches, combined with Fusil Paris\'s singular spirit.'
+            },
+            contact: {
+                intro1: 'Come discover the studio by appointment to try on pieces.',
+                intro2: 'A phone call is always possible.'
+            },
+            cart: { empty: 'Your cart is empty', size: 'Size', remove: 'Remove', total: 'Total', checkout: 'Checkout' }
+        }
+    };
+
+    let lang = localStorage.getItem('fusil-lang') || 'fr';
+    let products = [];
+    let photos = [];
+    let cart = JSON.parse(localStorage.getItem('fusil-cart') || '[]');
+    let currentProduct = null;
+    let selectedSize = 54;
+
+    const $ = id => document.getElementById(id);
+    const $$ = sel => document.querySelectorAll(sel);
+
+    function t(key) {
+        return key.split('.').reduce((o,k) => o?.[k], i18n[lang]) || '';
+    }
+
+    function applyTranslations() {
+        $$('[data-i18n]').forEach(el => {
+            const text = t(el.dataset.i18n);
+            if (text) el.textContent = text;
+        });
+    }
+
+    function toggleLang() {
+        lang = lang === 'fr' ? 'en' : 'fr';
+        localStorage.setItem('fusil-lang', lang);
+        $('langToggle').textContent = lang.toUpperCase();
+        $('menuLangFlag').textContent = lang.toUpperCase();
+        $('menuLangText').textContent = lang === 'fr' ? 'English' : 'Français';
+        applyTranslations();
+        renderCart();
+    }
+
+    async function supabase(table, query = '') {
+        const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${table}?${query}`, {
+            headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
+        });
+        return res.ok ? res.json() : [];
+    }
+
+    async function fetchProducts() {
+        const res = await fetch('/api/products');
+        return res.ok ? res.json() : [];
+    }
+
+    function navigateTo(view) {
+        $('menu').classList.remove('open');
+        $('menuScrim').classList.remove('open');
+        $$('.view').forEach(v => v.classList.remove('active'));
+        $('view' + view.charAt(0).toUpperCase() + view.slice(1)).classList.add('active');
+        $$('[data-view]').forEach(a => a.classList.toggle('active', a.dataset.view === view));
+        const header = $('header');
+        if (view === 'lookbook') {
+            header.classList.add('gradient');
+            header.classList.remove('light');
+        } else {
+            header.classList.remove('gradient');
+            header.classList.add('light');
+        }
+        $('gridBtn').style.display = view === 'lookbook' ? 'flex' : 'none';
+        if (view === 'cart') renderCart();
+    }
+
+    function renderLookbook() {
+        const feed = $('lookbookFeed');
+        const dots = $('lookbookDots');
+        feed.innerHTML = photos.map((p,i) => `
+            <div class="lookbook-slide" data-index="${i}">
+                <img src="${storageUrl(p.src)}" loading="${i<2?'eager':'lazy'}">
+            </div>
+        `).join('');
+        dots.innerHTML = photos.map((_,i) => `<span data-index="${i}" class="${i===0?'active':''}"></span>`).join('');
+        
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    dots.querySelectorAll('span').forEach((d,i) => d.classList.toggle('active', i === +e.target.dataset.index));
+                }
+            });
+        }, {threshold: 0.6});
+        feed.querySelectorAll('.lookbook-slide').forEach(s => observer.observe(s));
+        
+        dots.querySelectorAll('span').forEach(d => {
+            d.onclick = () => feed.querySelector(`[data-index="${d.dataset.index}"]`).scrollIntoView({behavior:'smooth'});
+        });
+    }
+
+    function renderGrid() {
+        $('gridContainer').innerHTML = photos.map((p,i) => 
+            `<img src="${storageUrl(p.src)}" loading="lazy" onclick="navigateTo('lookbook')">`
+        ).join('');
+    }
+
+    function renderShop() {
+        $('shopGrid').innerHTML = products.length ? products.map(p => `
+            <div class="shop-item" onclick="openDetail('${p.id}')">
+                <div class="shop-item-img"><img src="${p.images?.[0]||''}" loading="lazy"></div>
+                <div class="shop-item-info">
+                    <div class="shop-item-name">${p.name}</div>
+                    <div class="shop-item-price">${p.price} €</div>
+                </div>
+            </div>
+        `).join('') : '<div class="loading">Chargement...</div>';
+    }
+
+    window.openDetail = function(id) {
+        currentProduct = products.find(p => p.id === id);
+        if (!currentProduct) return;
+        selectedSize = 54;
+        $('detailMainImg').src = currentProduct.images?.[0] || '';
+        $('detailThumbs').innerHTML = (currentProduct.images||[]).map((img,i) => 
+            `<img src="${img}" class="${i===0?'active':''}" onclick="setThumb(${i})">`
+        ).join('');
+        $('detailCollection').textContent = currentProduct.metadata?.collection || '';
+        $('detailName').textContent = currentProduct.name;
+        $('detailPrice').textContent = currentProduct.price + ' €';
+        $('detailDesc').textContent = lang === 'en' ? (currentProduct.metadata?.desc_en||'') : (currentProduct.metadata?.desc_fr||'');
+        const sizes = currentProduct.metadata?.sizes?.split(',') || ['46','48','50','52','54','56','58','60','62'];
+        $('sizeChips').innerHTML = sizes.map(s => `<button class="size-chip ${s.trim()==='54'?'selected':''}" onclick="selectSize('${s.trim()}')">${s.trim()}</button>`).join('');
+        $('customSizeInput').value = '';
+        $('detail').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.setThumb = function(i) {
+        $('detailMainImg').src = currentProduct.images[i];
+        $('detailThumbs').querySelectorAll('img').forEach((t,j) => t.classList.toggle('active', i===j));
+    };
+
+    window.selectSize = function(s) {
+        selectedSize = +s;
+        $('sizeChips').querySelectorAll('.size-chip').forEach(c => c.classList.toggle('selected', c.textContent === s));
+        $('customSizeInput').value = '';
+    };
+
+    function closeDetail() {
+        $('detail').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function addToCart() {
+        if (!currentProduct) return;
+        const custom = $('customSizeInput').value;
+        cart.push({
+            id: currentProduct.id,
+            name: currentProduct.name,
+            price: currentProduct.price,
+            image: currentProduct.images?.[0] || '',
+            size: custom ? null : selectedSize,
+            customSize: custom ? +custom : null,
+            priceId: currentProduct.priceId
+        });
+        localStorage.setItem('fusil-cart', JSON.stringify(cart));
+        updateBadge();
+        closeDetail();
+        navigateTo('cart');
+    }
+
+    function updateBadge() {
+        $('cartBadge').textContent = cart.length;
+        $('cartBadge').classList.toggle('show', cart.length > 0);
+    }
+
+    function renderCart() {
+        const c = $('cartContainer');
+        if (!cart.length) {
+            c.innerHTML = `<h2 class="cart-title">Panier</h2><div class="cart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg><p>${t('cart.empty')||'Votre panier est vide'}</p><button class="btn-primary" onclick="navigateTo('shop')">Voir les produits</button></div>`;
+            return;
+        }
+        const total = cart.reduce((s,i) => s + i.price, 0);
+        c.innerHTML = `<h2 class="cart-title">Panier</h2><div class="cart-items">${cart.map((item,i) => `
+            <div class="cart-item">
+                <div class="cart-item-img"><img src="${item.image}"></div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-size">${item.customSize ? 'Sur mesure '+item.customSize+'mm' : 'Taille '+item.size}</div>
+                    <div class="cart-item-price">${item.price} €</div>
+                    <button class="cart-item-remove" onclick="removeItem(${i})">Retirer</button>
+                </div>
+            </div>
+        `).join('')}</div><div class="cart-footer"><div class="cart-total"><span>Total</span><span>${total} €</span></div><button class="btn-primary" onclick="checkout()">Commander</button></div>`;
+    }
+
+    window.removeItem = function(i) {
+        cart.splice(i,1);
+        localStorage.setItem('fusil-cart', JSON.stringify(cart));
+        updateBadge();
+        renderCart();
+    };
+
+    window.checkout = async function() {
+        const res = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({items: cart, locale: lang})
+        });
+        const data = await res.json();
+        if (data.url) window.location.href = data.url;
+    };
+
+    window.navigateTo = navigateTo;
+
+    async function init() {
+        const params = new URLSearchParams(location.search);
+        if (params.get('success')) {
+            cart = [];
+            localStorage.setItem('fusil-cart', '[]');
+            alert('Merci pour votre commande !');
+            history.replaceState({}, '', '/');
+        }
+        
+        $('menuBtn').onclick = () => { $('menu').classList.add('open'); $('menuScrim').classList.add('open'); };
+        $('menuClose').onclick = () => { $('menu').classList.remove('open'); $('menuScrim').classList.remove('open'); };
+        $('menuScrim').onclick = () => { $('menu').classList.remove('open'); $('menuScrim').classList.remove('open'); };
+        $('langToggle').onclick = toggleLang;
+        $('menuLangBtn').onclick = toggleLang;
+        $('cartBtn').onclick = () => navigateTo('cart');
+        $('logoLink').onclick = e => { e.preventDefault(); navigateTo('lookbook'); };
+        $('gridBtn').onclick = () => navigateTo('grid');
+        $('detailBack').onclick = closeDetail;
+        $('addToCartBtn').onclick = addToCart;
+        $('sizeGuideBtn').onclick = () => $('sizeGuideModal').classList.add('open');
+        $('sizeGuideClose').onclick = () => $('sizeGuideModal').classList.remove('open');
+        $('sizeGuideModal').onclick = e => { if (e.target === $('sizeGuideModal')) $('sizeGuideModal').classList.remove('open'); };
+        $$('[data-view]').forEach(a => a.onclick = e => { e.preventDefault(); navigateTo(a.dataset.view); });
+        $('customSizeInput').oninput = () => { if ($('customSizeInput').value) $$('.size-chip').forEach(c => c.classList.remove('selected')); };
+
+        $('logoWhite').src = storageUrl('logo-blanc.png');
+        $('logoBlack').src = storageUrl('logo-noir.png');
+        $('aboutImage').src = storageUrl('apropos.jpg');
+
+        applyTranslations();
+        updateBadge();
+
+        products = await fetchProducts();
+        renderShop();
+
+        photos = await supabase('lookbook', 'select=*&active=eq.true&order=position.asc');
+        renderLookbook();
+        renderGrid();
+    }
+
+    init();
+})();
+</script>
+</body>
+</html>
